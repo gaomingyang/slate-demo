@@ -1,4 +1,4 @@
-import React, { Children, CSSProperties, useCallback, useMemo, useState } from "react";
+import React, { CSSProperties, useCallback, useMemo, useState } from "react";
 import isHotkey from "is-hotkey";
 import {
   Editable,
