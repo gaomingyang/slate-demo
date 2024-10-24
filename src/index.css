@@ -89,3 +89,14 @@ iframe {
   outline-offset: -20px;
   white-space: pre-wrap;
 }
+
+.binary-code{
+  background-color: gray;
+  border: 1px solid #000;
+  border-radius: 8px;
+  font-family: monospace;
+}
+.binaryCodeBtn{
+  cursor: pointer;
+  margin-right: 2px;
+}
