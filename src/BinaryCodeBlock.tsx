@@ -1,22 +1,11 @@
 import React, { CSSProperties,useState,forwardRef } from 'react';
 import {
-    Editable,
-    withReact,
     useSlate,
-    Slate,
-    RenderElementProps,
-    RenderLeafProps,
   } from "slate-react";
 import {
     Editor,
     Transforms,
-    createEditor,
-    Descendant,
     Element as SlateElement,
-    BaseText,
-    BaseElement,
-    BaseEditor,
-    Text,
   } from "slate";
 
 type BinaryCodeBlockProps = {
@@ -132,7 +121,7 @@ const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attri
                     console.log("is string")
                     const content = child.props.text.text
                     console.log(content)
-                    return content.split('').map((char,index)=>(
+                    return content.split('').map((char:string,index:number)=>(
                         <span key = {index} style= {{ color: char === '1' ? 'green' : char === '0' ? 'red' : 'inherit'}}> {char} </span>
                     ));
                 }
