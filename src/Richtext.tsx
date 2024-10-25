@@ -308,7 +308,7 @@ const Element = ({ attributes, children, element }: ElementProps) => {
         </ol>
       );
     case "binary-code":
-      return <BinaryCodeBlock attributes={attributes} element={element} >{children}</BinaryCodeBlock>;
+      return <BinaryCodeBlock attributes={style} {...attributes} element={element} >{children}</BinaryCodeBlock>;
     case "code-block":
       return (
         <pre className="code-block" style={style} {...attributes}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { CSSProperties,useState,forwardRef } from 'react';
 import {
     Editable,
     withReact,
@@ -25,10 +25,15 @@ type BinaryCodeBlockProps = {
   element: SlateElement;
 };
 
-const BinaryCodeBlock = ({ attributes, children, element }: BinaryCodeBlockProps) => {
+const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attributes, children, element }, ref) => {
   const editor = useSlate();
+  const style = { textAlign: element.align as CSSProperties["textAlign"] };
+
   //tooltip
   const [tooltip, setTooltip] = useState({ visible: false, text: "", x: 0, y: 0 });
+
+  //focus
+  const [isFocused, setIsFocused] = useState(false);
 
   // change binary to string
   const binaryToString = (binary: string): string => {
@@ -90,21 +95,52 @@ const BinaryCodeBlock = ({ attributes, children, element }: BinaryCodeBlockProps
     }
   };
 
+  const handleFocus = () => {
+    console.log("is focus")
+    setIsFocused(true);
+  }
+  const handleBlur = () =>{
+    console.log("is blur");
+    setIsFocused(false);
+  }
+
   return (
     <>
       <div>
-        <button className="binaryCodeBtn" onClick={() => handleClickBinaryCodeBtn("1")}>1</button>
-        <button className="binaryCodeBtn" onClick={() => handleClickBinaryCodeBtn("0")}>0</button>
+        <button className="binaryCodeBtn" tabIndex={-1} onMouseDown={(e) => e.preventDefault()} onClick={() => handleClickBinaryCodeBtn("1")}>1</button>
+        <button className="binaryCodeBtn" tabIndex={-1} onMouseDown={(e) => e.preventDefault()} onClick={() => handleClickBinaryCodeBtn("0")}>0</button>
       </div>
       <pre
+        ref={ref}
         className="binary-code"
-        style={{ textAlign: element.align }}
+        style={style}
         {...attributes}
         onMouseEnter={(event) => handleBinaryCodeMouseEnter(event, children)}
         onMouseLeave={handleBinaryCodeMouseLeave}
         tabIndex={0}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
       >
-        <code>{children}</code>
+        <code>
+            
+            {/* {isFocused ? "is focused" : children} */}
+
+            {isFocused ? React.Children.map(children,(child) => {
+                console.log("child");
+                console.log(child);
+                if (React.isValidElement(child) && typeof child.props.text.text === "string") {
+                    console.log("is string")
+                    const content = child.props.text.text
+                    console.log(content)
+                    return content.split('').map((char,index)=>(
+                        <span key = {index} style= {{ color: char === '1' ? 'green' : char === '0' ? 'red' : 'inherit'}}> {char} </span>
+                    ));
+                }
+                return child;
+            }) : children}
+            
+            
+            </code>
       </pre>
       {tooltip.visible && (
         <span style={{
@@ -118,6 +154,6 @@ const BinaryCodeBlock = ({ attributes, children, element }: BinaryCodeBlockProps
       )}
     </>
   );
-};
+});
 
 export default BinaryCodeBlock;
