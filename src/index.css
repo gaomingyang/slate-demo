@@ -100,3 +100,9 @@ iframe {
   cursor: pointer;
   margin-right: 2px;
 }
+
+.code-block {
+  background-color: gray;
+  border: 1px solid #000;
+  font-family: monospace;
+}

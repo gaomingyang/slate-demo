@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback, useMemo, useState } from "react";
+import React, { CSSProperties, useCallback, useMemo, useState, useLayoutEffect } from "react";
 import isHotkey from "is-hotkey";
 import {
   Editable,
@@ -102,9 +102,38 @@ const RichTextExample = () => {
 
   const handleOnKeyDown = (event: React.KeyboardEvent) => {
     console.log("event.key:" + event.key)
-    if (event.key === '&') {
-      event.preventDefault()
-      editor.insertText('and')
+    // if (event.key === '&') {
+    //   event.preventDefault()
+    //   editor.insertText('and')
+    // }
+
+    const { selection } = editor;
+    if (!selection || !Editor.range(editor, selection)) {
+      return;
+    }
+    const [start] = Editor.edges(editor, selection);
+    const currentLine = Editor.string(editor, start.path);
+    console.log("start:"+start.path)
+    console.log("currentLine:"+currentLine)
+    if (event.key == " " && currentLine === "```") {
+      console.log("create code block")
+      event.preventDefault();
+      
+      //change to code block 
+      Transforms.setNodes(
+        editor,
+        { type: "code-block" }, 
+        { match: (n) => SlateElement.isElement(n) && n.type === "paragraph" }
+      );
+      //delete from current line from 0 to 4 char
+      Transforms.delete(editor, {
+        at: {
+          anchor: { path: start.path, offset: 0 }, 
+          focus: { path: start.path, offset: 4 },  
+        },
+      });
+      Transforms.insertText(editor, "");
+      return;
     }
 
     //trigger hotkey
@@ -372,6 +401,12 @@ const Element = ({ attributes, children, element }: ElementProps) => {
           )}
         </>
 
+      );
+    case "code-block":
+      return (
+        <pre className="code-block" style={style} {...attributes}>
+          <code>{children}</code>
+        </pre>
       );
     default:
       return (
