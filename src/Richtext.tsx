@@ -123,7 +123,8 @@ const RichTextExample = () => {
       //change to code block 
       Transforms.setNodes(
         editor,
-        { type: "code-block" }, 
+        // { type: "code-block" }, 
+        { type: "binary-code" }, 
         { match: (n) => SlateElement.isElement(n) && n.type === "paragraph" }
       );
       //delete from current line from 0 to 4 char
@@ -268,7 +269,7 @@ type ElementProps = {
 
 
 const Element = ({ attributes, children, element }: ElementProps) => {
-  const style = { textAlign: element.align as CSSProperties["textAlign"] };
+  const style = element.align ? { textAlign: element.align as CSSProperties["textAlign"] } : {};
 
   switch (element.type) {
     case "block-quote":
@@ -417,6 +418,12 @@ const initialValue: Descendant[] = [
     type: "paragraph",
     children: [
       { text: "01001000 01100101 01101100 01101100 01101111 01010111 01101111 01110010 01101100 01100100" }
+    ]
+  },
+  {
+    type: "binary-code",
+    children: [
+      { text: "01001000011001010110110001101100011011110101011101101111011100100110110001100100" }
     ]
   },
   {
