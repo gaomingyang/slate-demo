@@ -20,8 +20,7 @@ const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attri
   const style = element.align ? { textAlign: element.align as CSSProperties["textAlign"] } : {};
 
   //tooltip
-  const [tooltip, setTooltip] = useState({ visible: false, text: ""});
-  const [tooltipPosition, setTooltipPosition] = useState({x: 0, y: 0 });
+  const [tooltip, setTooltip] = useState({ visible: false, text: "",x: 0, y: 0});
 
   //focus
   const [isFocused, setIsFocused] = useState(false);
@@ -112,7 +111,6 @@ const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attri
   },[])
 
   useEffect(()=>{
-
     const binaryText = React.Children.map(children, (child) => {
       if (typeof child === "object" && child && 'props' in child && 'text' in child.props) {
         return child.props.text.text;
@@ -120,16 +118,9 @@ const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attri
       return '';
     })?.join("").replace(/\s+/g, "");
 
-    // console.log("binaryText:", binaryText);
-
     if (binaryText) {
       const asciiContent = binaryToString(binaryText);
-      //console.log("asciiContent:", asciiContent);
-      
-      setTooltip({
-        visible: true,
-        text: asciiContent,
-      });
+      setTooltip(prevTooltip => ({ ...prevTooltip, text: asciiContent }));      
     }
   },[children])
 
@@ -151,19 +142,11 @@ const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attri
       return '';
     })?.join("").replace(/\s+/g, "");
 
-    // console.log("binaryText:", binaryText);
-
     if (binaryText) {
       const asciiContent = binaryToString(binaryText);
-      //console.log("asciiContent:", asciiContent);
-      
       setTooltip({
-        visible: true,
+        visible:true,
         text: asciiContent,
-        
-      });
-
-      setTooltipPosition({
         x: event.clientX,
         y: event.clientY,
       })
@@ -173,6 +156,7 @@ const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attri
   const handleBinaryCodeMouseLeave = () => {
     // console.log("mouse leave binary code")
     setTooltip({ visible: false, text: '', x: 0, y: 0 });
+  
   };
 
   //click 1 or 0 button
@@ -194,10 +178,6 @@ const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attri
     const path = ReactEditor.findPath(editor as any, element);
       const endOfBlock = Editor.end(editor, path); // get end of the block
       Transforms.insertText(editor, value, { at: endOfBlock });
-    
-
-    
-
   };
 
   const handleFocus = () => {
@@ -243,9 +223,9 @@ const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attri
                 return child;
             }) : children}
             
-            
             </code>
       </pre>
+      
       {tooltip.visible && (
         <span style={{
           position: "fixed",
@@ -255,12 +235,8 @@ const BinaryCodeBlock = forwardRef<HTMLPreElement,BinaryCodeBlockProps>(({ attri
           color: "#fff",
           padding: "2px",
         }}>{tooltip.text}</span>
-
-        
-
-
-
       )}
+
     </>
   );
 });

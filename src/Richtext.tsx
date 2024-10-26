@@ -152,7 +152,6 @@ const RichTextExample = () => {
       }
     }
 
-
   }
 
   return (
@@ -181,7 +180,6 @@ const RichTextExample = () => {
         spellCheck
         autoFocus
         onKeyDown={handleOnKeyDown}
-
       />
     </Slate>
   );
